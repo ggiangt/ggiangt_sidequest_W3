@@ -1,48 +1,58 @@
-// NOTE: Do NOT add setup() or draw() in this file
-// setup() and draw() live in main.js
-// This file only defines:
-// 1) drawWin() → what the win screen looks like
-// 2) input handlers → how the player returns to the start screen
-//
-// This file is intentionally very similar to lose.js.
-// The goal is to show that win/lose screens are often
-// simple “end states” with minimal logic.
+// ------------------------------------------------------------
+// win.js - Good Ending Screen
+// ------------------------------------------------------------
 
-// ------------------------------------------------------------
-// Main draw function for win screen
-// ------------------------------------------------------------
-// drawWin() is called from main.js
-// only when currentScreen === "win"
 function drawWin() {
-  // Green-tinted background to communicate success
-  background(200, 255, 200);
+  // Elegant gold/green success background
+  background(60, 80, 60);
 
-  fill(0);
+  // Decorative elements
+  fill(100, 130, 100, 100);
+  noStroke();
+  ellipse(200, 200, 300, 300);
+  ellipse(600, 600, 250, 250);
+
+  // Title
+  fill(255, 230, 150);
+  textSize(48);
   textAlign(CENTER, CENTER);
+  text("A Perfect Evening", width / 2, 180);
 
-  // Main success message
-  textSize(40);
-  text("You Win!", width / 2, 300);
+  // Success message box
+  fill(40, 50, 40, 200);
+  rectMode(CENTER);
+  rect(width / 2, 350, 550, 200, 15);
 
-  // Instruction text
-  textSize(20);
-  text("Click or press R to return to Start.", width / 2, 360);
+  // Success text
+  fill(220, 255, 220);
+  textSize(22);
+  text("You uncovered the party's secrets", width / 2, 290);
+  text("while maintaining everyone's trust!", width / 2, 320);
+
+  // Stats summary
+  fill(180, 220, 180);
+  textSize(18);
+  text("Final Stats:", width / 2, 370);
+  text("Secrets: " + secrets + "  |  Trust: " + trust + "  |  Social: " + social, width / 2, 400);
+
+  // Ending description
+  fill(200, 230, 200);
+  textSize(16);
+  text("The host invites you to their next exclusive gathering.", width / 2, 480);
+  text("You've become the talk of high society.", width / 2, 510);
+
+  // Restart instruction
+  fill(180, 200, 180);
+  textSize(18);
+  text("Press R to play again", width / 2, 600);
 }
 
-// ------------------------------------------------------------
-// Mouse input for win screen
-// ------------------------------------------------------------
-// Any mouse click returns the player to the start screen
 function winMousePressed() {
-  currentScreen = "start";
+  resetGame();
 }
 
-// ------------------------------------------------------------
-// Keyboard input for win screen
-// ------------------------------------------------------------
-// R is commonly used for “restart” in games
 function winKeyPressed() {
   if (key === "r" || key === "R") {
-    currentScreen = "start";
+    resetGame();
   }
 }

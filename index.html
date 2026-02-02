@@ -4,15 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#1e3a3a" />
-    <title>GBDA302 — Week 3 Demo</title>
+    <title>The Dinner Party</title>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <header class="site-header">
       <div class="wrap">
-        <h1 class="title">Win or Lose</h1>
-        <p class="subtitle">GBDA302 • Week 3 — Game States, UI, Menus</p>
+        <h1 class="title">The Dinner Party</h1>
+        <p class="subtitle">GBDA302 - Interactive Story Game</p>
       </div>
     </header>
 
@@ -22,7 +22,7 @@
           <!-- p5 canvas mounts here -->
         </div>
         <p class="hint">
-          Tip: use Enter / I on the start screen. Press R on win/lose to return.
+          Tip: Press ENTER to start. Talk to guests, make choices, and try to get the good ending!
         </p>
       </section>
     </main>
@@ -30,16 +30,19 @@
     <footer class="site-footer">
       <div class="wrap">
         <small
-          >© 2026 Dr. Karen Cochrane &amp; David Han · Built with p5.js</small
+          >Built with p5.js</small
         >
       </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
-    <!-- your existing files (order matters) -->
+    <!-- Screen files (order matters - load before main.js) -->
     <script src="start.js"></script>
     <script src="instructions.js"></script>
     <script src="game.js"></script>
+    <script src="host.js"></script>
+    <script src="chef.js"></script>
+    <script src="critic.js"></script>
     <script src="win.js"></script>
     <script src="lose.js"></script>
     <script src="main.js"></script>

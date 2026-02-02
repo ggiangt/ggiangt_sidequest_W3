@@ -1,128 +1,122 @@
-// NOTE: Do NOT add setup() or draw() in this file
-// setup() and draw() live in main.js
-// This file only defines:
-// 1) drawGame() → what the game screen looks like
-// 2) input handlers → what happens when the player clicks or presses keys
-// 3) helper functions specific to this screen
+// ------------------------------------------------------------
+// game.js - The Party Room (hub screen)
+// ------------------------------------------------------------
+// This is the main hub where players choose which guest to talk to
 
-// ------------------------------
-// Button data
-// ------------------------------
-// This object stores all the information needed to draw
-// and interact with the button on the game screen.
-// Keeping this in one object makes it easier to move,
-// resize, or restyle the button later.
-const gameBtn = {
-  x: 400, // x position (centre of the button)
-  y: 550, // y position (centre of the button)
-  w: 260, // width
-  h: 90, // height
-  label: "PRESS HERE", // text shown on the button
-};
+function drawParty() {
+  // Warm party room background
+  background(80, 60, 70);
 
-// ------------------------------
-// Main draw function for this screen
-// ------------------------------
-// drawGame() is called from main.js *only*
-// when currentScreen === "game"
-function drawGame() {
-  // Set background colour for the game screen
-  background(240, 230, 140);
+  // Draw stats in top corner
+  drawStats();
 
-  // ---- Title and instructions text ----
-  fill(0); // black text
-  textSize(32);
+  // Title
+  fill(255, 230, 200);
+  textSize(36);
   textAlign(CENTER, CENTER);
-  text("Game Screen", width / 2, 160);
+  text("The Dinner Party", width / 2, 100);
 
-  textSize(18);
-  text(
-    "Click the button (or press ENTER) for a random result.",
-    width / 2,
-    210,
-  );
+  // Instruction
+  fill(220, 200, 180);
+  textSize(24);
+  text("Choose who to talk to:", width / 2, 160);
 
-  // ---- Draw the button ----
-  // We pass the button object to a helper function
-  drawGameButton(gameBtn);
+  // Guest buttons
+  const hostBtn = {
+    x: width / 2,
+    y: 280,
+    w: 280,
+    h: 70,
+    label: talkedToHost ? "Talk to the Host (done)" : "Talk to the Host",
+  };
 
-  // ---- Cursor feedback ----
-  // If the mouse is over the button, show a hand cursor
-  // Otherwise, show the normal arrow cursor
-  cursor(isHover(gameBtn) ? HAND : ARROW);
+  const chefBtn = {
+    x: width / 2,
+    y: 380,
+    w: 280,
+    h: 70,
+    label: talkedToChef ? "Talk to the Chef (done)" : "Talk to the Chef",
+  };
+
+  const criticBtn = {
+    x: width / 2,
+    y: 480,
+    w: 280,
+    h: 70,
+    label: talkedToCritic ? "Talk to the Critic (done)" : "Talk to the Critic",
+  };
+
+  const finishBtn = {
+    x: width / 2,
+    y: 600,
+    w: 220,
+    h: 60,
+    label: "Finish Party",
+  };
+
+  drawButton(hostBtn);
+  drawButton(chefBtn);
+  drawButton(criticBtn);
+  drawFinishButton(finishBtn);
+
+  // Show progress hint
+  const guestsTalked = (talkedToHost ? 1 : 0) + (talkedToChef ? 1 : 0) + (talkedToCritic ? 1 : 0);
+  fill(180, 160, 140);
+  textSize(16);
+  text("Guests talked to: " + guestsTalked + "/3", width / 2, 680);
+
+  // Cursor feedback
+  const over = isHover(hostBtn) || isHover(chefBtn) || isHover(criticBtn) || isHover(finishBtn);
+  cursor(over ? HAND : ARROW);
 }
 
-// ------------------------------
-// Button drawing helper
-// ------------------------------
-// This function is responsible *only* for drawing the button.
-// It does NOT handle clicks or game logic.
-function drawGameButton({ x, y, w, h, label }) {
+// Special button style for finish button
+function drawFinishButton({ x, y, w, h, label }) {
   rectMode(CENTER);
-
-  // Check if the mouse is hovering over the button
-  // isHover() is defined in main.js so it can be shared
   const hover = isHover({ x, y, w, h });
 
   noStroke();
 
-  // Change button colour when hovered
-  // This gives visual feedback to the player
-  fill(
-    hover
-      ? color(180, 220, 255, 220) // lighter blue on hover
-      : color(200, 220, 255, 190), // normal state
-  );
+  if (hover) {
+    fill(150, 200, 150, 220);
+    drawingContext.shadowBlur = 20;
+    drawingContext.shadowColor = color(120, 180, 120);
+  } else {
+    fill(180, 220, 180, 210);
+    drawingContext.shadowBlur = 8;
+    drawingContext.shadowColor = color(150, 200, 150);
+  }
 
-  // Draw the button rectangle
-  rect(x, y, w, h, 14); // last value = rounded corners
+  rect(x, y, w, h, 14);
+  drawingContext.shadowBlur = 0;
 
-  // Draw the button text
-  fill(0);
-  textSize(28);
+  fill(40, 60, 40);
+  textSize(22);
   textAlign(CENTER, CENTER);
   text(label, x, y);
 }
 
-// ------------------------------
-// Mouse input for this screen
-// ------------------------------
-// This function is called from main.js
-// only when currentScreen === "game"
-function gameMousePressed() {
-  // Only trigger the outcome if the button is clicked
-  if (isHover(gameBtn)) {
-    triggerRandomOutcome();
+function partyMousePressed() {
+  const hostBtn = { x: width / 2, y: 280, w: 280, h: 70 };
+  const chefBtn = { x: width / 2, y: 380, w: 280, h: 70 };
+  const criticBtn = { x: width / 2, y: 480, w: 280, h: 70 };
+  const finishBtn = { x: width / 2, y: 600, w: 220, h: 60 };
+
+  if (isHover(hostBtn)) {
+    currentScreen = "host";
+  } else if (isHover(chefBtn)) {
+    currentScreen = "chef";
+  } else if (isHover(criticBtn)) {
+    currentScreen = "critic";
+  } else if (isHover(finishBtn)) {
+    checkEnding();
   }
 }
 
-// ------------------------------
-// Keyboard input for this screen
-// ------------------------------
-// Allows keyboard-only interaction (accessibility + design)
-function gameKeyPressed() {
-  // ENTER key triggers the same behaviour as clicking the button
-  if (keyCode === ENTER) {
-    triggerRandomOutcome();
-  }
-}
-
-// ------------------------------
-// Game logic: win or lose
-// ------------------------------
-// This function decides what happens next in the game.
-// It does NOT draw anything.
-function triggerRandomOutcome() {
-  // random() returns a value between 0 and 1
-  // Here we use a 50/50 chance:
-  // - less than 0.5 → win
-  // - 0.5 or greater → lose
-  //
-  // You can bias this later, for example:
-  // random() < 0.7 → 70% chance to win
-  if (random() < 0.5) {
-    currentScreen = "win";
-  } else {
-    currentScreen = "lose";
-  }
+function partyKeyPressed() {
+  // Number keys for quick selection
+  if (key === "1") currentScreen = "host";
+  if (key === "2") currentScreen = "chef";
+  if (key === "3") currentScreen = "critic";
+  if (keyCode === ENTER) checkEnding();
 }
